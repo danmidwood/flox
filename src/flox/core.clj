@@ -69,7 +69,7 @@
   [data]
   (dosync
    (alter audio-data-queue
-          #(flatter (cons % data))))
+          #(flatten (cons % data))))
   nil)
 
 
