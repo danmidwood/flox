@@ -64,9 +64,9 @@
 (defn queue-data
   [data]
   (dosync
-   (alter audio-data-queue
-          #(flatten (cons % data))))
+   (alter audio-data-queue concat data))
   nil)
+
 
 
 (defn frequency-int

@@ -45,6 +45,14 @@
     (dosync
      (ref-set audio-data-queue (list)))))
 
+(deftest queue-data-with-two-items-on-list-of-two-items
+  (testing "add second items after first items"
+    (queue-data '(1 2))
+    (queue-data '(3 4))
+    (is (=  '(1 2 3 4) @audio-data-queue))
+    (dosync
+     (ref-set audio-data-queue (list)))))
+
 
 (deftest create-line-starts-line
   (testing "expected line to be able to accept data"
