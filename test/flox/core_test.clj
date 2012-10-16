@@ -32,10 +32,48 @@
 
 (deftest queue-data-with-two-items-on-empty-list
   (testing "leaves queue with two items"
-    (dosync
-     (ref-set audio-data-queue (list)))
     (queue-data '(123 456))
     (is (= 2 (count @audio-data-queue)))
     (dosync
      (ref-set audio-data-queue (list)))))
 
+(deftest queue-data-with-two-items-on-list-of-two-items
+  (testing "leaves queue with four items"
+    (queue-data '(1 2))
+    (queue-data '(3 4))
+    (is (= 4 (count @audio-data-queue)))
+    (dosync
+     (ref-set audio-data-queue (list)))))
+
+
+(deftest create-line-starts-line
+  (testing "expected line to be able to accept data"
+    (is (< 0 (.available (create-line))))))
+
+
+(deftest not-running-to-begin
+  (testing "expected not to be running loop"
+    (is (not @running))))
+
+(deftest start-makes-us-running
+  (testing "expected to be running"
+    (start)
+    (is @running)))
+
+(deftest stop-stops-us-running
+  (testing "expected to not be running"
+    (stop)
+    (is (not @running))))
+
+(deftest stop-after-start-leaves-us-not-running
+  (testing "expected to not be running"
+    (start)
+    (stop)
+    (is (not @running))))
+
+(deftest start-after-stop-after-start-leaves-us-running
+  (testing "expected to be running"
+    (start)
+    (stop)
+    (start)
+    (is @running)))
