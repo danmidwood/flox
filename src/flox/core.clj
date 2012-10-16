@@ -31,7 +31,6 @@
 
 (defn write-to-audio-loop
   []
-
   (let [space-for-writing (.available @line)
         size-of-data-available (count @audio-data-queue)
         proposed-amount-to-write 24000]
@@ -62,9 +61,6 @@
   (dosync
    (ref-set running false)))
 
-  
-
-    
 (defn queue-data
   [data]
   (dosync
