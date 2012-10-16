@@ -3,5 +3,5 @@
         flox.core))
 
 (deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+  (testing "Sample rate is 48000"
+    (is (= 48000 sample-rate))))
