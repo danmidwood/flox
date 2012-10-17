@@ -1,26 +1,24 @@
 (ns flox.core-test
-  (:use clojure.test
-        flox.core))
+  (:use clojure.test)
+  (:use flox.core)
+  (:use midje.sweet))
 
-(deftest audio-format-sample-rate
-  (testing "is 48000"
-    (is (= 48000 (int  (.getSampleRate audio-format))))))
 
-(deftest audio-format-sample-size-in-bits
-  (testing "is 16"
-    (is (= 16 (.getSampleSizeInBits audio-format)))))
 
-(deftest audio-format-is-stereo
-  (testing "expected two channels"
-    (is (= 2 (.getChannels audio-format)))))
+(fact "audio format sample rate is 48000"
+      (int  (.getSampleRate audio-format)) => 48000)
 
-(deftest audio-format-frame-size
-  (testing "is four"
-    (is (= 4 (.getFrameSize audio-format)))))
+(fact "audio format size is 16 bits"
+      (.getSampleSizeInBits audio-format) => 16)
 
-(deftest audio-format-is-little-endian
-  (testing "expected isBigEndian to be false"
-    (is (not (.isBigEndian audio-format)))))
+(fact "audio format is stereo"
+  (.getChannels audio-format) => 2)
+
+(fact "audio format frame size is four"
+      (.getFrameSize audio-format) => 4)
+
+(fact "audio format is little endian"
+      (not (.isBigEndian audio-format)) => true)
 
 (deftest twelth-root
   (testing "is 1.059..."
@@ -88,5 +86,18 @@
     (stop)
     (start)
     (is @running)))
+
+
+;; (deftest write-to-loop-reduces-queue-size-by-24000
+;;   (testing "expected queue size of 24000"
+;;     (do
+;;       (dosync
+;;        (queue-data (get-note 0))
+;;        (is (= 48000 (count @audio-data-queue)))
+;;        (write-to-audio-loop))
+;;       (await line)
+;;       (is (= 24000 (count @audio-data-queue)))
+;;       (dosync
+;;        (ref-set audio-data-queue (list))))))
 
     
