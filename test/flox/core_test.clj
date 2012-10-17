@@ -58,6 +58,9 @@
   (testing "expected line to be able to accept data"
     (is (< 0 (.available (create-line))))))
 
+(deftest create-line-wrapped-in-agent-starts-available
+  (testing "expected line to be able to accept data"
+    (is (< 0 (.available @(agent (create-line)))))))
 
 (deftest not-running-to-begin
   (testing "expected not to be running loop"
@@ -85,3 +88,5 @@
     (stop)
     (start)
     (is @running)))
+
+    

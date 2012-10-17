@@ -41,7 +41,8 @@
         (dosync
          (println "writing")
          (send line #(play-to-line % (take proposed-amount-to-write @audio-data-queue)))
-         (alter audio-data-queue #(drop proposed-amount-to-write %)))))))
+         (alter audio-data-queue #(drop proposed-amount-to-write %)))))
+    nil))
 
 (def running (ref false))
 
