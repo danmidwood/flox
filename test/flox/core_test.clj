@@ -20,20 +20,17 @@
 (fact "audio format is little endian"
       (not (.isBigEndian audio-format)) => true)
 
-(deftest twelth-root
-  (testing "is 1.059..."
-    (is (=  1.0594630943592953 a12th-root))))
+(fact "the twelth root is 1.059...."
+      a12th-root => 1.0594630943592953)
 
-(deftest audio-data-queue-starts
-  (testing "off as empty list"
-    (is (= '() @audio-data-queue))))
+(fact "audio queue is empty"
+      @audio-data-queue => '())
 
-(deftest queue-data-with-two-items-on-empty-list
-  (testing "leaves queue with two items"
-    (queue-data '(123 456))
-    (is (= 2 (count @audio-data-queue)))
-    (dosync
-     (ref-set audio-data-queue (list)))))
+(fact "adding two items onto queue gives queue with two items"
+      (queue-data '(123 456))
+      (dosync
+       (count @audio-data-queue) => 2
+       (ref-set audio-data-queue (list))))
 
 (deftest queue-data-with-two-items-on-list-of-two-items
   (testing "leaves queue with four items"
@@ -60,9 +57,8 @@
   (testing "expected line to be able to accept data"
     (is (< 0 (.available @(agent (create-line)))))))
 
-(deftest not-running-to-begin
-  (testing "expected not to be running loop"
-    (is (not @running))))
+(fact "app begins with audio output not started"
+      @running => false)
 
 (deftest start-makes-us-running
   (testing "expected to be running"
