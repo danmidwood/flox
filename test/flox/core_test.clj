@@ -32,56 +32,48 @@
        (count @audio-data-queue) => 2
        (ref-set audio-data-queue (list))))
 
-(deftest queue-data-with-two-items-on-list-of-two-items
-  (testing "leaves queue with four items"
-    (queue-data '(1 2))
-    (queue-data '(3 4))
-    (is (= 4 (count @audio-data-queue)))
-    (dosync
-     (ref-set audio-data-queue (list)))))
+(fact "queueing two items on a list of two gives list with four items"
+      (queue-data '(1 2))
+      (queue-data '(3 4))
+      (count @audio-data-queue) => 4
+      (dosync
+       (ref-set audio-data-queue (list))))
 
-(deftest queue-data-with-two-items-on-list-of-two-items
-  (testing "add second items after first items"
-    (queue-data '(1 2))
-    (queue-data '(3 4))
-    (is (=  '(1 2 3 4) @audio-data-queue))
-    (dosync
-     (ref-set audio-data-queue (list)))))
+(fact "queueing data on non-empty list adds new items to the end"
+      (queue-data '(1 2))
+      (queue-data '(3 4))
+      (=  '(1 2 3 4) @audio-data-queue) => true
+      (dosync
+       (ref-set audio-data-queue (list))))
 
 
-(deftest create-line-starts-line
-  (testing "expected line to be able to accept data"
-    (is (< 0 (.available (create-line))))))
+(fact "a new line can accept data"
+      (< 0 (.available (create-line))) => true)
 
-(deftest create-line-wrapped-in-agent-starts-available
-  (testing "expected line to be able to accept data"
-    (is (< 0 (.available @(agent (create-line)))))))
+(fact "an agent to a new line can accept data"
+      (< 0 (.available @(agent (create-line)))) => true)
 
 (fact "app begins with audio output not started"
       @running => false)
 
-(deftest start-makes-us-running
-  (testing "expected to be running"
-    (start)
-    (is @running)))
+(fact "calling start sets running to true"
+      (start)
+      @running => true)
 
-(deftest stop-stops-us-running
-  (testing "expected to not be running"
-    (stop)
-    (is (not @running))))
+(fact "calling stop sets running to false"
+      (stop)
+      @running => false)
 
-(deftest stop-after-start-leaves-us-not-running
-  (testing "expected to not be running"
-    (start)
-    (stop)
-    (is (not @running))))
+(fact "calling stop after start leaves running false"
+      (start)
+      (stop)
+      @running => false)
 
-(deftest start-after-stop-after-start-leaves-us-running
-  (testing "expected to be running"
-    (start)
-    (stop)
-    (start)
-    (is @running)))
+(fact "calling start stop start leaves running true"
+      (start)
+      (stop)
+      (start)
+      @running => true)
 
 
 ;; (deftest write-to-loop-reduces-queue-size-by-24000
