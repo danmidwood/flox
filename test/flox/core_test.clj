@@ -1,7 +1,8 @@
 (ns flox.core-test
   (:use clojure.test)
   (:use flox.core)
-  (:use midje.sweet))
+  (:use midje.sweet)
+  (:use clojure.math.numeric-tower))
 
 
 
@@ -74,6 +75,25 @@
       (stop)
       (start)
       @running => true)
+
+(defn two-sig-fig
+  [x]
+  (/ (round (* 100 x)) 100.0))
+
+(fact "default frequency is A"
+      (frequency) => 440.0)
+
+(fact "frequency offset one up is A#"
+      (two-sig-fig (frequency 1)) => 466.16)
+
+(fact "frequency offset one down is G#"
+      (two-sig-fig (frequency -1)) => 415.30)
+
+(fact "frequency offset twelve down is A below middle A"
+      (two-sig-fig (frequency -12)) => 220.000)
+
+(fact "frequency offset twelve up is A above middle A"
+      (two-sig-fig (frequency 12)) => 880.000)
 
 
 ;; (deftest write-to-loop-reduces-queue-size-by-24000

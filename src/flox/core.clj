@@ -70,17 +70,15 @@
 
 
 
-(defn frequency-int
+(defn frequency
   "Calculate the frequency of a note offset from a base frequency."
-  ([] (frequency-int 0))
-  ([offset] (frequency-int offset 444.0) )
+  ([] (frequency 0))
+  ([offset] (frequency offset 440.0) )
   ([offset base]
      (* base (clojure.math.numeric-tower/expt a12th-root offset))))
 
-(def frequency (memoize frequency-int))
-
-(defn get-note-int
-  ([offset] (get-note-int offset 1000))
+(defn get-note
+  ([offset] (get-note offset 1000))
   ([offset ms]
      (let
          [freq (frequency offset)
@@ -88,8 +86,6 @@
        (for [i (range (* sample-rate (/ ms 1000)))]
          (let [angle (/ (* 2 i (. Math PI)) period)]
            (byte (* 127  (clojure.algo.generic.math-functions/sin angle))))))))
-
-(def get-note (memoize get-note-int))
 
 (defn harmonize
   [& waves]
