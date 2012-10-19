@@ -77,6 +77,11 @@
   ([offset base]
      (* base (clojure.math.numeric-tower/expt a12th-root offset))))
 
+(defn find-sine
+  [distance]
+  (clojure.algo.generic.math-functions/sin (* 2 distance (. Math PI))))
+
+
 (defn get-note
   ([offset] (get-note offset 1000))
   ([offset ms]
@@ -86,6 +91,9 @@
        (for [i (range (* sample-rate (/ ms 1000)))]
          (let [angle (/ (* 2 i (. Math PI)) period)]
            (byte (* 127  (clojure.algo.generic.math-functions/sin angle))))))))
+         
+         
+
 
 (defn harmonize
   [& waves]
@@ -109,8 +117,9 @@
 
 (defn play
   [start end steps]
-  (map #(play-to-line @line (get-note %1 100))
+  (map #(play-to-line @line (get-note %1 (/ 10000 steps)))
        (offsets start end steps)))
+
 
 (defn play-to-queue
   [start end steps]
