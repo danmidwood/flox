@@ -95,6 +95,15 @@
 (fact "frequency offset twelve up is A above middle A"
       (two-sig-fig (frequency 12)) => 880.000)
 
+(fact "get note gives 48000 frames of data"
+      (count  (get-note 0) ) => 48000)
+
+(fact "get note for 500 ms gives 24000 frames of data"
+      (count  (get-note 0 500) ) => 24000)
+
+(fact "get note for 100 ms gives 4800 frames of data"
+      (count  (get-note 0 100) ) => 4800)
+
 
 ;; (deftest write-to-loop-reduces-queue-size-by-24000
 ;;   (testing "expected queue size of 24000"
