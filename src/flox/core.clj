@@ -89,7 +89,7 @@
 
 (defn harmonize
   [& waves]
-  (apply map (fn [& notes] (byte (/ (apply + notes) (count waves)))) waves))
+  (apply map (fn [& notes] (float (/ (apply + notes) (count waves)))) waves))
 
 
 (defn rise

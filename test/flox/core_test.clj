@@ -104,6 +104,18 @@
 (fact "get note for 100 ms gives 4800 frames of data"
       (count  (get-note 0 100) ) => 4800)
 
+(fact "harmonize taking seqs of length 4 returns one seq of length 4"
+      (count (harmonize '(1 2 3 4) '(5 6 7 8))) => 4)
+
+(fact "harmonize averages the values supplied - TODO something else?"
+      (first (harmonize '(4) '(8))) => 6.0)
+
+(fact "harmonize can deal with floats when given ints"
+      (first (harmonize '(5) '(10))) => 7.5)
+
+(fact "harmonize can deal with floats when given floats"
+      (first (harmonize '(5.0) '(10.0))) => 7.5)
+
 
 ;; (deftest write-to-loop-reduces-queue-size-by-24000
 ;;   (testing "expected queue size of 24000"
