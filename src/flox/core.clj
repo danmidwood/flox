@@ -92,7 +92,28 @@
          (let [angle (/ (* 2 i (. Math PI)) period)]
            (byte (* 127  (clojure.algo.generic.math-functions/sin angle))))))))
          
-         
+(defn get-note-replacement
+  ([offset] (get-note-replacement offset 1000))
+  ([offset ms]
+     (let
+         [freq (frequency offset) ; 440.0
+          cycles-per-sample (/ sample-rate freq) ; 109.0909090909
+          requested-no-of-samples (* sample-rate (/ ms 1000)) ; 48 * ms
+          actual-no-of-samples (* cycles-per-sample (clojure.math.numeric-tower/round (+ 0.5 (/ requested-no-of-samples cycles-per-sample))))]
+       (for [i (range actual-no-of-samples)]
+         (byte (* 127 (find-sine (/ i cycles-per-sample))))))))
+
+(defn get-notes
+  [& offsets]
+  (let [frame-size (* sample-rate (/ 1000 1000))
+        all-frames-total-size (* frame-size (count offsets))]
+    (for [i (range (-  all-frames-total-size 1))]
+      (let [offset (nth offsets (if (> i 0) (mod frame-size i) 0) 0)
+            freq (frequency offset)
+            period (/ sample-rate freq)
+            angle (/ (* 2 i (. Math PI)) period)]
+        (byte (* 127  (clojure.algo.generic.math-functions/sin angle)))))))
+  
 
 
 (defn harmonize
@@ -126,6 +147,9 @@
   (map #(queue-data (get-note % 250))
        (offsets start end steps)))
 
+(defn play-notes-to-queue
+  [start end steps]
+  (play-to-line @line (apply get-notes (offsets start end steps))))
 
 
 
