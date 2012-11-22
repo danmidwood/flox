@@ -6,6 +6,6 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/algo.generic "0.1.0"]
                  [org.clojure/math.numeric-tower "0.0.1"]
-                 [midje "1.4.0"]]
-  :profiles {:dev {:plugins [[lein-midje "2.0.0-SNAPSHOT"]]}}
+                 [midje "1.5-alpha2"]]
+  :profiles {:dev {:plugins [[lein-midje "2.0.1"]]}}
   :main flox.core)
