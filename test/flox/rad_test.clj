@@ -26,6 +26,7 @@
 
 
 (defn nth-sig-fig
+  "Working with frequencies, it's useful to see how accurate we can be. This helps"
   [n number]
   (let
       [scaler (clojure.math.numeric-tower/expt 10 n)]
