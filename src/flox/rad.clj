@@ -33,13 +33,5 @@
             (freq-freq-lazy-seq (frequency (/ 1 sample-rate) base) sample-rate)))))
 
 
-(defn get-note
-  ([offset] (get-note offset 1000))
-  ([offset ms]
-     (let
-         [freq (frequency offset)
-          period (/ (:sample-rate line-data) freq)]
-       (for [i (range (*  (:sample-rate line-data) (/ ms 1000)))]
-         (let [angle (/ (* 2 i (. Math PI)) period)]
-           (byte (* 127  (clojure.algo.generic.math-functions/sin angle))))))))
+
 
