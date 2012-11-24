@@ -53,9 +53,9 @@
 
 (defn emit-audio
   [line data]
-    (+
-     (.write ^SourceDataLine line (byte-array (take (:buffer-size line-data) data)) 0 (:buffer-size line-data))
-     (emit-audio line (drop (:buffer-size line-data) data))))
+  (do
+    (.write ^SourceDataLine line (byte-array (take (:buffer-size line-data) data)) 0 (:buffer-size line-data)))
+  (recur line (drop (:buffer-size line-data) data)))
 
 
 
