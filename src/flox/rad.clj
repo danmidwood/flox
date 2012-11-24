@@ -14,8 +14,6 @@
 
 (defn frequency
   "Calculate the frequency of a note offset from a base frequency."
-  ([] (frequency 0))
-  ([offset] (frequency offset 440.0) )
   ([offset base]
      (* base (clojure.math.numeric-tower/expt (:12th-root line-data) offset))))
 

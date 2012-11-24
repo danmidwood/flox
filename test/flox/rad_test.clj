@@ -37,27 +37,25 @@
   (nth-sig-fig 2 x))
 
 
-(fact "default frequency is A"
-      (frequency) => 440.0)
 
 (fact "frequency offset one up is A#"
-      (two-sig-fig (frequency 1)) => 466.16)
+      (two-sig-fig (frequency 1 440.0)) => 466.16)
 
 (fact "the first value in the lazy freq stream is A"
       (nth-sig-fig 5 (nth (freq-freq-lazy-seq 440.0) 0)) => 440.0)
 
 (fact "the 48001th value in the lazy freq stream is A#"
-      (nth-sig-fig 8 (nth (freq-freq-lazy-seq 440.0) 48000)) => (nth-sig-fig 8 (frequency 1)))
+      (nth-sig-fig 8 (nth (freq-freq-lazy-seq 440.0) 48000)) => (nth-sig-fig 8 (frequency 1 440.0)))
 
 (fact "frequency offset one up and then one down is A"
-      (frequency -1 (frequency 1)) => 440.0)
+      (frequency -1 (frequency 1 440.0)) => 440.0)
 
 (fact "frequency offset one down is G#"
-      (two-sig-fig (frequency -1)) => 415.30)
+      (two-sig-fig (frequency -1 440.0)) => 415.30)
 
 (fact "frequency offset twelve down is A below middle A"
-      (two-sig-fig (frequency -12)) => 220.000)
+      (two-sig-fig (frequency -12 440.0)) => 220.000)
 
 (fact "frequency offset twelve up is A above middle A"
-      (two-sig-fig (frequency 12)) => 880.000)
+      (two-sig-fig (frequency 12 440.0)) => 880.000)
 
