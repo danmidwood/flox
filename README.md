@@ -4,9 +4,11 @@ A Shepard Tone Generator written in Clojure
 
 Work in progress. Here be no Shepards, yet.
 
-## What is a Shepard Tone
+## What is a Shepard Tone?
 
 A Shepard tone is an auditory illusion that gives the impression of an ever increasing or decresing pitch, but without a global pitch change.
+
+What?
 
 It is best described as the audio equivalent of M. C. Escher's Ascending and Descending, wherein walking either up or down the steps results in no change to altitude.
 
