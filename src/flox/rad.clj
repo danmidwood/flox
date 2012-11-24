@@ -18,11 +18,6 @@
   ([offset base]
      (* base (clojure.math.numeric-tower/expt (:12th-root line-data) offset))))
 
-(defn find-sine
-  [distance]
-  (clojure.algo.generic.math-functions/sin (* 2 distance (. Math PI))))
-
-
 (defn freq-freq-lazy-seq 
   "Create a lazy sequence of incrementing frequencies at one note per second with the specified sample-rate. If no sample-rate is supplied then 48000 is chosen"
   ([base] (freq-freq-lazy-seq base base (frequency 12 base)))
@@ -42,8 +37,8 @@
            this-sine (clojure.algo.generic.math-functions/sin angle)]
        (lazy-seq
         (cons this-sine
-              (sine-seq (rest freqs) (+ angle increment)))))))
-
+              ;; The increment is divided by four to correct the pitch. Why though?
+              (sine-seq (rest freqs) (+ angle (/ increment 4)))))))) 
 (defn byte-my-sine
   "Transforms a floating point sine value into a byte"
   ([sine]
