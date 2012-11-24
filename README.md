@@ -1,35 +1,50 @@
 # flox
 
-FIXME: description
+A Shepard Tone Generator written in Clojure
 
-## Installation
+Work in progress. Here be no Shepards, yet.
 
-Download from http://example.com/FIXME.
+## What is a Shepard Tone
+
+A Shepard tone is an auditory illusion that gives the impression of an ever increasing or decresing pitch, but without a global pitch change.
+
+It is best described as the audio equivalent of M. C. Escher's Ascending and Descending, wherein walking either up or down the steps results in no change to altitude.
+
+![An optical illusion showing steps that raise up and then joins itself at the bottom to complete a circuit](http://upload.wikimedia.org/wikipedia/en/6/66/Ascending_and_Descending.jpg "M.C. Escher's Ascending and Descending")
+
+## Get
+
+`git clone git://github.com/danmidwood/flox.git`
 
 ## Usage
 
-FIXME: explanation
+To run inside the repl
+```shell
+cd flox
+lein repl
+```
 
-    $ java -jar flox-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
+Inside the repl
+```clojure
+user> (ns flox.rad)
+flox.rad> (emit-audio (create-line) (map byte-my-sine (sine-seq (freq-freq-lazy-seq 55.0))))
+```
+This will loop forever. Hit C-c C-b to interrupt.
 
 ## Examples
 
-...
+`freq-freq-lazy-seq` takes a start, a maximum and a minumum and produce a lazy seq beginning at start and incrememting up to maximum before restarting at minumum. A one parameter variant also exists where the start and min are set to the one parameter and the max set to one octave above.
+
+This gives a nice bassy hum
+`(emit-audio (create-line) (map byte-my-sine (sine-seq (freq-freq-lazy-seq 27.5 27.5 55.0))))`
+
 
 ### Bugs
 
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+This is still WIP and doesn't actually produce Shepard Tones yet. What it does produce is the illusion of a Shepard Tone but with an actual increase in pitch,
 
 ## License
 
-Copyright © 2012 FIXME
+Copyright © 2012 Dan Midwood
 
 Distributed under the Eclipse Public License, the same as Clojure.
