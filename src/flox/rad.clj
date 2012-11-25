@@ -7,9 +7,9 @@
                               AudioFormat AudioFormat$Encoding))
 
 (def line-data
-  {:sample-rate 48000
-   :audio-format (AudioFormat. 48000 16 2 true false)
-   :buffer-size (/ 48000 10)
+  {:sample-rate 44100
+   :audio-format (AudioFormat. 44100 16 1 true false)
+   :write-size (/ 44100 10)
    :12th-root (clojure.math.numeric-tower/expt 2 (/ 1 12))})
 
 
@@ -19,7 +19,7 @@
      (* base (clojure.math.numeric-tower/expt (:12th-root line-data) offset))))
 
 (defn freq-freq-lazy-seq 
-  "Create a lazy sequence of incrementing frequencies at one note per second with the specified sample-rate. If no sample-rate is supplied then 48000 is chosen"
+  "Create a lazy sequence of incrementing looping frequencies at one note per second."
   ([base] (freq-freq-lazy-seq base base (frequency 12 base)))
   ([base min max]
      (lazy-seq
@@ -48,18 +48,22 @@
   []
   (let [line (. AudioSystem getSourceDataLine (:audio-format line-data))]
     (doto line
-      (.open (:audio-format line-data) (:sample-rate line-data))
+      (.open (:audio-format line-data))
       (.start))))
+
+(defn -merge-values
+  [& values]
+  (/ (apply + values) (count values)))
+
+(defn -write-audio2
+  [line data]
+  (.write ^SourceDataLine line (byte-array data) 0 (:write-size line-data)))
 
 (defn emit-audio
   [line data]
   (do
-    (.write ^SourceDataLine line (byte-array (take (:buffer-size line-data) data)) 0 (:buffer-size line-data)))
-  (recur line (drop (:buffer-size line-data) data)))
-
-
-
-
+    (-write-audio2 line (take (:write-size line-data) data)))
+  (recur line (drop  (:write-size line-data) data)))
 
 
 

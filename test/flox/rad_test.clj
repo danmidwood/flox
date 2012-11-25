@@ -6,17 +6,17 @@
 
 
 
-(fact "audio format sample rate is 48000"
-      (int  (.getSampleRate (:audio-format line-data))) => 48000)
+(fact "audio format sample rate is 44100"
+      (int  (.getSampleRate (:audio-format line-data))) => 44100)
 
 (fact "audio format size is 16 bits"
       (.getSampleSizeInBits (:audio-format line-data)) => 16)
 
-(fact "audio format is stereo"
-  (.getChannels (:audio-format line-data)) => 2)
+(fact "audio has one channel"
+  (.getChannels (:audio-format line-data)) => 1)
 
-(fact "audio format frame size is four"
-      (.getFrameSize (:audio-format line-data)) => 4)
+(fact "audio format frame size is two"
+      (.getFrameSize (:audio-format line-data)) => 2)
 
 (fact "audio format is little endian"
       (not (.isBigEndian (:audio-format line-data))) => true)
@@ -44,8 +44,8 @@
 (fact "the first value in the lazy freq stream is A"
       (nth-sig-fig 5 (nth (freq-freq-lazy-seq 440.0) 0)) => 440.0)
 
-(fact "the 48001th value in the lazy freq stream is A#"
-      (nth-sig-fig 8 (nth (freq-freq-lazy-seq 440.0) 48000)) => (nth-sig-fig 8 (frequency 1 440.0)))
+(fact "the 44101st value in the lazy freq stream is A#"
+      (nth-sig-fig 8 (nth (freq-freq-lazy-seq 440.0) 44100)) => (nth-sig-fig 8 (frequency 1 440.0)))
 
 (fact "frequency offset one up and then one down is A"
       (frequency -1 (frequency 1 440.0)) => 440.0)

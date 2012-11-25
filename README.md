@@ -38,7 +38,19 @@ This will loop forever. Hit C-c C-b to interrupt.
 `freq-freq-lazy-seq` takes a start, a maximum and a minumum and produce a lazy seq beginning at start and incrememting up to maximum before restarting at minumum. A one parameter variant also exists where the start and min are set to the one parameter and the max set to one octave above.
 
 This gives a nice bassy hum
-`(emit-audio (create-line) (map byte-my-sine (sine-seq (freq-freq-lazy-seq 27.5 27.5 55.0))))`
+```clojure
+(emit-audio (create-line) (map byte-my-sine (sine-seq (freq-freq-lazy-seq 27.5 27.5 55.0))))
+```
+
+Multiple sounds can be produced together by combining their wave values
+```clojure
+(emit-audio 
+	   (create-line) 
+	    (map byte-my-sine (sine-seq 
+			       (map -merge-values 
+				    (freq-freq-lazy-seq 440 440 (frequency 0 440.0))
+				    (freq-freq-lazy-seq 466 466 (frequency 0.5 466.0))))))
+```
 
 
 ### Bugs
