@@ -24,15 +24,16 @@
   ([base min max]
      (lazy-seq
       (cons base
-            (if (> base max)
-              (freq-freq-lazy-seq (frequency (/ 1 (:sample-rate line-data)) min) min max)
+            (if (>= base max)
+              (freq-freq-lazy-seq min min max)
               (freq-freq-lazy-seq (frequency (/ 1 (:sample-rate line-data)) base) min max))))))
 
 
 (defn- freq-to-sine
   "Create a function for values on a sine wave from frequencies.
  The produced fn contains internal state to track the distance traveled along the sine so it is not suitable for concurrant use."
-  [] 	   
+  []
+  (println "creating new freq-to-sine")
   (let [angle (atom 0.0)]
     (fn
       [frequency]
@@ -60,15 +61,28 @@
   [& values]
   (/ (apply + values) (count values)))
 
-(defn-  write-audio
+(defn- write-audio
   [line data]
   (.write ^SourceDataLine line (byte-array data) 0 (:write-size line-data)))
 
 (defn- emit-audio
   [line data]
   (do
-    (-write-audio line (take (:write-size line-data) data)))
+    (write-audio line (take (:write-size line-data) data)))
   (recur line (drop  (:write-size line-data) data)))
+
+(defn- frequencies
+  [base height threads]
+  (map #(freq-freq-lazy-seq (frequency (* (/ 1 threads) % height) base) base (frequency height base)) (range 0 threads)))
+
+(defn start
+  [base height threads]
+  (emit-audio
+   (create-line)
+   (map byte-my-sine
+        (apply map merge-values
+               (map #(map (freq-to-sine) %)
+                    (frequencies base height threads))))))
 
 
 
