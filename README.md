@@ -29,7 +29,7 @@ lein repl
 Inside the repl
 ```clojure
 user> (ns flox.rad)
-flox.rad> (emit-audio (create-line) (map byte-my-sine (sine-seq (freq-freq-lazy-seq 55.0))))
+flox.rad> (emit-audio (create-line) (map byte-my-sine (map (freq-to-sine) (freq-freq-lazy-seq 55.0))))
 ```
 This will loop forever. Hit C-c C-b to interrupt.
 
@@ -39,14 +39,14 @@ This will loop forever. Hit C-c C-b to interrupt.
 
 This gives a nice bassy hum
 ```clojure
-(emit-audio (create-line) (map byte-my-sine (sine-seq (freq-freq-lazy-seq 27.5 27.5 55.0))))
+(emit-audio (create-line) (map byte-my-sine (map (freq-to-sine) (freq-freq-lazy-seq 27.5 27.5 55.0))))
 ```
 
 Multiple sounds can be produced together by combining their wave values
 ```clojure
 (emit-audio 
 	   (create-line) 
-	    (map byte-my-sine (sine-seq 
+	    (map byte-my-sine (map (freq-to-sine)
 			       (map -merge-values 
 				    (freq-freq-lazy-seq 440 440 (frequency 0 440.0))
 				    (freq-freq-lazy-seq 466 466 (frequency 0.5 466.0))))))

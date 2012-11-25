@@ -29,18 +29,23 @@
               (freq-freq-lazy-seq (frequency (/ 1 (:sample-rate line-data)) base) min max))))))
 
 
-(defn sine-seq
-  "Lazy seq for sine wave values"
-  ([freqs] (sine-seq freqs 0))
-  ([freqs angle]
-     (let [increment (* 2 (. Math PI) (/ (first freqs) (:sample-rate line-data)))
-           this-sine (clojure.algo.generic.math-functions/sin angle)]
-       (lazy-seq
-        (cons this-sine
-              ;; The increment is divided by four to correct the pitch. Why though?
-              (sine-seq (rest freqs) (+ angle (/ increment 4)))))))) 
+(defn freq-to-sine
+  "Create a function for values on a sine wave from frequencies.
+ The produced fn contains internal state to track the distance traveled along the sine so it is not suitable for concurrant use."
+  [] 	   
+  (let [angle (atom 0.0)]
+    (fn
+      [frequency]
+     (let [increment (* 2 (. Math PI) (/ frequency (:sample-rate line-data)))
+           this-sine (clojure.algo.generic.math-functions/sin @angle)]
+       (do
+         ;; The increment is divided by four to correct the pitch. Why though?
+         (swap! angle + (/ increment 4))
+         this-sine)))))
+
+
 (defn byte-my-sine
-  "Transforms a floating point sine value into a byte"
+  "Transforms a floating point sine value (-1..1) into a signed byte (-128..127)"
   ([sine]
      (byte (* (. Byte MAX_VALUE) sine))))
 
