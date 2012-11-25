@@ -13,12 +13,12 @@
    :12th-root (clojure.math.numeric-tower/expt 2 (/ 1 12))})
 
 
-(defn frequency
+(defn- frequency
   "Calculate the frequency of a note offset from a base frequency."
   ([offset base]
      (* base (clojure.math.numeric-tower/expt (:12th-root line-data) offset))))
 
-(defn freq-freq-lazy-seq 
+(defn- freq-freq-lazy-seq
   "Create a lazy sequence of incrementing looping frequencies at one note per second."
   ([base] (freq-freq-lazy-seq base base (frequency 12 base)))
   ([base min max]
@@ -29,7 +29,7 @@
               (freq-freq-lazy-seq (frequency (/ 1 (:sample-rate line-data)) base) min max))))))
 
 
-(defn freq-to-sine
+(defn- freq-to-sine
   "Create a function for values on a sine wave from frequencies.
  The produced fn contains internal state to track the distance traveled along the sine so it is not suitable for concurrant use."
   [] 	   
@@ -44,30 +44,30 @@
          this-sine)))))
 
 
-(defn byte-my-sine
+(defn- byte-my-sine
   "Transforms a floating point sine value (-1..1) into a signed byte (-128..127)"
   ([sine]
      (byte (* (. Byte MAX_VALUE) sine))))
 
-(defn create-line
+(defn- create-line
   []
   (let [line (. AudioSystem getSourceDataLine (:audio-format line-data))]
     (doto line
       (.open (:audio-format line-data))
       (.start))))
 
-(defn -merge-values
+(defn- merge-values
   [& values]
   (/ (apply + values) (count values)))
 
-(defn -write-audio2
+(defn-  write-audio
   [line data]
   (.write ^SourceDataLine line (byte-array data) 0 (:write-size line-data)))
 
-(defn emit-audio
+(defn- emit-audio
   [line data]
   (do
-    (-write-audio2 line (take (:write-size line-data) data)))
+    (-write-audio line (take (:write-size line-data) data)))
   (recur line (drop  (:write-size line-data) data)))
 
 
