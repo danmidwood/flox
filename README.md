@@ -14,9 +14,15 @@ A visual equivalent would be M. C. Escher's Ascending and Descending, wherein wa
 
 ## Get
 
+Source:
 `git clone git://github.com/danmidwood/flox.git`
 
+Runnable jar:
+https://github.com/downloads/danmidwood/flox/flox-0.1.0-SNAPSHOT-standalone.jar
+
 ## Usage
+
+### With Leiningen
 
 Run through leiningen with `lein run` and passing in a starting pitch, size of increase and the number of concurrent audio tracks.
 
@@ -37,6 +43,15 @@ user> (ns flox.rad)
 flox.rad> (start 27.5 96 8)
 ```
 This will loop forever. Hit `C-c C-b` to interrupt.
+
+### With the downloaded jar file
+
+This takes the same parameters as described above in the Leiningen section.
+
+```shell
+java -jar flox-0.1.0-SNAPSHOT-standalone.jar 27.5 96 8
+```
+
 
 ### How to choose values
 
