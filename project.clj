@@ -8,4 +8,4 @@
                  [org.clojure/math.numeric-tower "0.0.1"]
                  [midje "1.5-alpha2"]]
   :profiles {:dev {:plugins [[lein-midje "2.0.1"]]}}
-  :main flox.rad)
+  :main flox.main)
