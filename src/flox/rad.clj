@@ -7,8 +7,8 @@
                               AudioFormat AudioFormat$Encoding))
 
 (def line-data
-  {:sample-rate 44100
-   :audio-format (AudioFormat. 44100 16 1 true false)
+  {:sample-rate (/ 44100 1)
+   :audio-format (AudioFormat. (/ 44100 1) 16 1 true false)
    :write-size (/ 44100 10)
    :12th-root (clojure.math.numeric-tower/expt 2 (/ 1 12))})
 
@@ -33,7 +33,7 @@
   "Create a function for values on a sine wave from frequencies.
  The produced fn contains internal state to track the distance traveled along the sine so it is not suitable for concurrant use."
   []
-  (println "creating new freq-to-sine")
+  (println "created freq-to-sine")
   (let [angle (atom 0.0)]
     (fn
       [frequency]
@@ -43,6 +43,22 @@
          ;; The increment is divided by four to correct the pitch. Why though?
          (swap! angle + (/ increment 4))
          this-sine)))))
+
+(defn- peak-volume
+  "Create a function that will accept a sine value and adjust it by a magnitude depending on how far through the cycle we are. This means that notes are loudest around the median and quiet at the end ranges.
+ The produced fn contains internal state to track how far into the cycle it is so it is not suitable for concurrant use."
+  [frames]
+  (println "creating new peak-volume")
+  (let [middle (/ frames 2)
+        distance (atom 0)]
+    (fn
+      [sine]
+      (let [distance-traveled (mod @distance frames)
+            distance-from-middle (/ (clojure.math.numeric-tower/abs (- middle distance-traveled)) frames)
+            volume (- 1 (* 2 distance-from-middle))]
+        (do
+          (swap! distance inc)
+          (* sine volume))))))
 
 
 (defn- byte-my-sine
@@ -71,9 +87,23 @@
     (write-audio line (take (:write-size line-data) data)))
   (recur line (drop  (:write-size line-data) data)))
 
-(defn- frequencies
+(defn- frequencies2
   [base height threads]
   (map #(freq-freq-lazy-seq (frequency (* (/ 1 threads) % height) base) base (frequency height base)) (range 0 threads)))
+
+(defn- freqs-to-sines
+  "Accepts a list of n lists of frequencies and returns a list of n lists of sine values"
+  [& freqs]
+  (apply map
+         #(map (freq-to-sine) %)
+         freqs))
+
+(defn- volume-adjust-sines
+  "Accepts a list of n lists of sines and returns a list of n lists of sine values with the magnitued adjusted"
+  [height & sines]
+  (apply map
+         #(map (peak-volume (* (:sample-rate line-data) height)) %)
+         sines))
 
 (defn start
   [base height threads]
@@ -81,8 +111,7 @@
    (create-line)
    (map byte-my-sine
         (apply map merge-values
-               (map #(map (freq-to-sine) %)
-                    (frequencies base height threads))))))
-
-
+               (volume-adjust-sines height
+                                    (freqs-to-sines 
+                                     (frequencies2 base height threads)))))))
 
