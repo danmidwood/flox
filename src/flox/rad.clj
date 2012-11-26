@@ -47,10 +47,10 @@
 (defn- peak-volume
   "Create a function that will accept a sine value and adjust it by a magnitude depending on how far through the cycle we are. This means that notes are loudest around the median and quiet at the end ranges.
  The produced fn contains internal state to track how far into the cycle it is so it is not suitable for concurrant use."
-  [frames]
+  [frames offset]
   (println "creating new peak-volume")
   (let [middle (/ frames 2)
-        distance (atom 0)]
+        distance (atom offset)]
     (fn
       [sine]
       (let [distance-traveled (mod @distance frames)
@@ -59,7 +59,6 @@
         (do
           (swap! distance inc)
           (* sine volume))))))
-
 
 (defn- byte-my-sine
   "Transforms a floating point sine value (-1..1) into a signed byte (-128..127)"
@@ -87,9 +86,6 @@
     (write-audio line (take (:write-size line-data) data)))
   (recur line (drop  (:write-size line-data) data)))
 
-(defn- frequencies2
-  [base height threads]
-  (map #(freq-freq-lazy-seq (frequency (* (/ 1 threads) % height) base) base (frequency height base)) (range 0 threads)))
 
 (defn- freqs-to-sines
   "Accepts a list of n lists of frequencies and returns a list of n lists of sine values"
@@ -98,20 +94,33 @@
          #(map (freq-to-sine) %)
          freqs))
 
-(defn- volume-adjust-sines
-  "Accepts a list of n lists of sines and returns a list of n lists of sine values with the magnitued adjusted"
-  [height & sines]
-  (apply map
-         #(map (peak-volume (* (:sample-rate line-data) height)) %)
-         sines))
-
 (defn start
   [base height threads]
   (emit-audio
    (create-line)
    (map byte-my-sine
         (apply map merge-values
-               (volume-adjust-sines height
-                                    (freqs-to-sines 
-                                     (frequencies2 base height threads)))))))
+               (map
+                #(map
+                  (peak-volume
+                   (* height (:sample-rate line-data))
+                   (* (/ 1 threads) % (* height (:sample-rate line-data))))
+                  (map
+                   (freq-to-sine)
+                   (freq-freq-lazy-seq
+                    (frequency (* (/ 1 threads) % height) base)
+                    base
+                    (frequency height base))))
+                (range threads))))))
+
+
+
+(defn -main
+    "Start the Shepard.
+This takes three parameters
+Base: The lower point of the scale.
+Height: The number of notes to rise. Fractions of notes are allowed.
+Threads: How many concurrent streams of sound there should be"
+    [& args]
+    (apply start (map #(. Float valueOf %) args)))
 
