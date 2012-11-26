@@ -7,8 +7,8 @@
                               AudioFormat AudioFormat$Encoding))
 
 (def line-data
-  {:sample-rate (/ 44100 1)
-   :audio-format (AudioFormat. (/ 44100 1) 16 1 true false)
+  {:sample-rate (/ 44100 10)
+   :audio-format (AudioFormat. (/ 44100 10) 16 1 true false)
    :write-size (/ 44100 10)
    :12th-root (clojure.math.numeric-tower/expt 2 (/ 1 12))})
 
