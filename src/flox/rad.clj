@@ -58,7 +58,7 @@
             volume (- 1 (* 2 distance-from-middle))]
         (do
           (swap! distance inc)
-          (* sine volume))))))
+          (* sine volume volume volume))))))
 
 (defn- byte-my-sine
   "Transforms a floating point sine value (-1..1) into a signed byte (-128..127)"
