@@ -33,7 +33,6 @@
   "Create a function for values on a sine wave from frequencies.
  The produced fn contains internal state to track the distance traveled along the sine so it is not suitable for concurrant use."
   []
-  (println "created freq-to-sine")
   (let [angle (atom 0.0)]
     (fn
       [frequency]
@@ -48,7 +47,6 @@
   "Create a function that will accept a sine value and adjust it by a magnitude depending on how far through the cycle we are. This means that notes are loudest around the median and quiet at the end ranges.
  The produced fn contains internal state to track how far into the cycle it is so it is not suitable for concurrant use."
   [frames offset]
-  (println "creating new peak-volume")
   (let [middle (/ frames 2)
         distance (atom offset)]
     (fn
