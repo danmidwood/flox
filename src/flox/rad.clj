@@ -52,7 +52,7 @@
     (fn
       [sine]
       (let [distance-traveled (mod @distance frames)
-            distance-from-middle (/ (clojure.math.numeric-tower/abs (- middle distance-traveled)) frames)
+            distance-from-middle (/ (abs (- middle distance-traveled)) frames)
             volume (- 1 (* 2 distance-from-middle))]
         (do
           (swap! distance inc)
