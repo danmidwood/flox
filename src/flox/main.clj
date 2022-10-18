@@ -1,5 +1,5 @@
 (ns flox.main
-  (:gen-class :main :true)
+  (:gen-class :main true)
   (:use flox.rad))
 
 
